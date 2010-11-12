@@ -4,11 +4,16 @@
 # see: www.ogdl.org
 # date: 12 june 2003
 
+# 2010-11-11 Hui Zhou:
+# Comma (,) only resets one level up
+# Semicolon (;) resets to beginning of the line (or group)
+# Semicolon is the new metachar that we have discussed in OGDL mailinglist but never got agreed. 
+
 package OGDL::Parser;
 
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use OGDL::Graph;
 
@@ -211,13 +216,18 @@ sub _node
             { _fatal("Unmatched ')'"); }
         return 1;
     }
-    elsif($c eq ','){
+    elsif($c eq ';'){
         _getc($p);
         $p->{level} = $p->{groups}[$p->{ixgroup}];
 #        if($p->{allowgoback}){
 #	    $p->{level}--; #exception: , at beginning
 #	    $p->{allowgoback}=0;
 #	}
+	return 1;
+    }
+    elsif($c eq ','){
+        _getc($p);
+	$p->{level}--; #exception: , at beginning
 	return 1;
     }
     elsif($c eq "'" || $c eq '"'){
@@ -417,7 +427,7 @@ sub _nextSpace{
 sub _nextWord{
     my $p=shift;
     my $next=substr($p->{"text"},$p->{"ix"},2);
-    if(defined $next && $next!~/^([ \t\r\n\(\),]|# )/ ){
+    if(defined $next && $next!~/^([ \t\r\n\(\);,]|# )/ ){
 	return 1;
     }
     else {
@@ -428,7 +438,7 @@ sub _peek{
     my $p=shift;
     my $next=substr($p->{"text"},$p->{"ix"},2);
     if(defined $next){
-	if($next=~/^(['"\(\),]|# |\\[\r\n])/ ){
+	if($next=~/^(['"\(\);,]|# |\\[\r\n])/ ){
 	    return substr($next,0,1);
 	}
 	if($next=~/^[ \t]/ ){
@@ -474,7 +484,7 @@ sub _isSpaceChar
 sub _isWordChar
 {
     if(defined $_[0]){
-	if ($_[0] =~ /[ \t\n\r\(\),]/) { return 0; }
+	if ($_[0] =~ /[ \t\n\r\(\),;]/) { return 0; }
     }
     else{
 	return 0;

@@ -1,4 +1,5 @@
-use Test::More tests=>1;
+use Test::More tests=>2;
+use OGDL::Parser;
 BEGIN { use_ok('OGDL::Graph') };
 
 my $g=OGDL::Graph->new("test");

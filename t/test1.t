@@ -74,6 +74,7 @@ close F;
 my $g=OGDL::Parser::fileToGraph("test1.g");
 
 ok($g,"File parsing went through");
+$g->print();
 for (my $i=1; $i<=6; $i++){
     my $s=$g->get("list.$i.[2]");
     ok($s->{"name"} eq '3', "Path $i retrieved correctly");
@@ -109,12 +110,14 @@ else{
     }
 }
 $s=$g->get("tasa.[0]");
-ok($s->{"name"} eq $longstr,"roundtrip block long string1 test");
+print "$s\n";
+#print "$longstr\n";
+ok(($s->{"name"} eq $longstr),"roundtrip block long string1 test");
 
 $s=$g->get("tasa[1].[0]");
-ok($s->{"name"} eq $longstr,"roundtrip quote long string1 test");
+ok(($s->{"name"} eq $longstr),"roundtrip quote long string1 test");
 
 $s=$g->get("groups[].a[2].[1]");
-ok($s->{"name"} eq 'c',"roundtrip group path selection test");
+ok(($s->{"name"} eq 'c'),"roundtrip group path selection test");
 
 ok($roundtrip,"Roundtrip test ok");

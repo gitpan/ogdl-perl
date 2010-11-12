@@ -577,10 +577,19 @@ sub print{
    if($params{"depth"}){$depth=$params{"depth"};}
    if(exists $params{"group"}){$group=$params{"group"};}
    if($params{"noblockquote"}){$noblockquote=$params{"noblockquote"};}
-
-   my $indent=0;
-   $pending = $g->_print($output,$indent,$indentwidth,0,1,$quote,$noblockquote,$depth,$group);
-   if ($pending) { print $output  "\n"; }
+   if(defined $params{printroot} and $params{"printroot"} eq "0"){
+	$g=$list->[0];
+	foreach my $g2(@$list){
+	   my $indent=0;
+	   $pending = $g2->_print($output,$indent,$indentwidth,0,1,$quote,$noblockquote,$depth,$group);
+	   if ($pending) { print $output  "\n"; }
+	}
+    }
+    else{
+       my $indent=0;
+       $pending = $g->_print($output,$indent,$indentwidth,0,1,$quote,$noblockquote,$depth,$group);
+       if ($pending) { print $output  "\n"; }
+    }
 }
 
 sub printnodes{
